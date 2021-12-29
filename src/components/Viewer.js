@@ -4,8 +4,8 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const { Paragraph } = Typography;
 
-const IconLink = ({ src, text }) => (
-  <a className="example-link">
+const IconLink = ({ src, text, target }) => (
+  <a className="example-link" href={target}>
     <img className="example-link-icon" src={src} alt={text} />
     {text}
   </a>
@@ -31,7 +31,7 @@ for i in range(N):
     res += A[i]*B[i]
 
 print(res)`;
-  const codeString1 = "";
+  const url = codeString.split("\n")[0].split(" ")[1];
 
   return (
     <>
@@ -75,10 +75,14 @@ print(res)`;
             <IconLink
               src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg"
               text="문제 풀러가기"
+              target={url}
             />
             <IconLink
               src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg"
               text="코드 자세히 보기"
+              target={
+                "https://github.com/kshired/Algorithms/blob/main/baekjoon/1026.py"
+              }
             />
           </div>
         </div>
