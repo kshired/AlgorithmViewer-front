@@ -1,4 +1,4 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .trigger {
   padding: 0 24px;
@@ -21,4 +21,34 @@
 
 .site-layout .site-layout-background {
   background: #fff;
+}
+
+.ant-page-header-rtl .image {
+  margin: 0 60px 0 0;
+}
+
+.example-link {
+  margin-right: 16px;
+  line-height: 24px;
+}
+[data-theme="compact"] .example-link {
+  line-height: 20px;
+}
+.example-link-icon {
+  margin-right: 8px;
+}
+
+[data-theme="compact"] .example-link-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.ant-page-header-rtl .example-link {
+  float: right;
+  margin-right: 0;
+  margin-left: 16px;
+}
+.ant-page-header-rtl .example-link-icon {
+  margin-right: 0;
+  margin-left: 8px;
 }
