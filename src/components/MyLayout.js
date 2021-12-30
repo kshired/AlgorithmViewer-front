@@ -1,5 +1,5 @@
 import { Breadcrumb, Layout, Menu } from "antd";
-import { BaekjoonIcon, ProgrammersIcon } from "../icons/Icon";
+import { BaekjoonIcon, ProgrammersIcon, LeetCodeIcon } from "../icons/Icon";
 import React, { useEffect, useState } from "react";
 import Viewer from "./Viewer";
 import SubMenu from "antd/lib/menu/SubMenu";
@@ -14,6 +14,7 @@ const MyLayout = () => {
   const [problem, setProblem] = useState("");
   const [programmers, setProgrammers] = useState([]);
   const [baekjoon, setBaekjoon] = useState([]);
+  const [leetcode, setLeetcode] = useState([]);
   const [id, setId] = useState(null);
 
   useEffect(() => {
@@ -28,29 +29,39 @@ const MyLayout = () => {
       );
     });
     axios.get("http://localhost:8080/problems?site=BAEKJOON").then((res) => {
-      setBaekjoon(
-        res.data.map((p) => {
-          return {
-            id: p.id,
-            name: p.name,
-          };
-        })
-      );
+      const data = res.data.map((p) => {
+        return {
+          id: p.id,
+          name: p.name,
+        };
+      });
+
+      data.sort((a, b) => parseInt(a.name) - parseInt(b.name));
+      setBaekjoon(data);
+    });
+
+    axios.get("http://localhost:8080/problems?site=LEETCODE").then((res) => {
+      const data = res.data.map((p) => {
+        return {
+          id: p.id,
+          name: p.name,
+        };
+      });
+
+      data.sort((a, b) => parseInt(a.name) - parseInt(b.name));
+      setLeetcode(data);
     });
   }, []);
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={() => setCollapsed(!collapsed)}
-      >
+      <Sider>
         <Logo collapsed={collapsed} />
         <Menu theme="dark" mode="vertical">
           <SubMenu
-            key="1"
+            key="9997"
             title="Baekjoon"
-            icon={<BaekjoonIcon style={{ color: "white" }} />}
+            style={{ fontSize: "16px" }}
+            icon={<BaekjoonIcon />}
           >
             {baekjoon.map((p) => (
               <Menu.Item
@@ -65,12 +76,36 @@ const MyLayout = () => {
               </Menu.Item>
             ))}
           </SubMenu>
-          <SubMenu key="42" title="Programmers" icon={<ProgrammersIcon />}>
+          <SubMenu
+            key="9998"
+            title="Programmers"
+            style={{ fontSize: "16px" }}
+            icon={<ProgrammersIcon />}
+          >
             {programmers.map((p) => (
               <Menu.Item
                 key={p.id}
                 onClick={() => {
                   setSite("Programmers");
+                  setProblem(p.name);
+                  setId(p.id);
+                }}
+              >
+                {p.name}
+              </Menu.Item>
+            ))}
+          </SubMenu>
+          <SubMenu
+            key="9999"
+            title="LeetCode"
+            style={{ fontSize: "16px" }}
+            icon={<LeetCodeIcon />}
+          >
+            {leetcode.map((p) => (
+              <Menu.Item
+                key={p.id}
+                onClick={() => {
+                  setSite("LeetCode");
                   setProblem(p.name);
                   setId(p.id);
                 }}

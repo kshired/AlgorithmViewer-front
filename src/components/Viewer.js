@@ -7,7 +7,15 @@ import axios from "axios";
 const { Paragraph } = Typography;
 
 const IconLink = ({ src, text, target }) => (
-  <a className="example-link" href={target}>
+  <a
+    className="example-link"
+    href={target}
+    onClick={() => {
+      if (target === null) {
+        alert("문제를 찾을 수 없습니다.");
+      }
+    }}
+  >
     <img className="example-link-icon" src={src} alt={text} />
     {text}
   </a>
@@ -29,10 +37,19 @@ const Viewer = ({ id }) => {
       if (res.data.site === "PROGRAMMERS") {
         setTitle(res.data.name.replaceAll("_", " "));
         setSubTitle("");
+        const tmpUrl = res.data.code.split("\n")[0].substr(2);
+        if (tmpUrl.includes("programmers")) {
+          setUrl(tmpUrl);
+        } else {
+          setUrl(null);
+        }
       } else if (res.data.site === "BAEKJOON") {
         setTitle(res.data.code.split("\n")[1].substr(2));
         setSubTitle(res.data.name);
         setUrl(`https://boj.kr/${res.data.name}`);
+      } else if (res.data.site === "LEETCODE") {
+        setTitle(res.data.code.split("\n")[1].substr(2));
+        setUrl(res.data.code.split("\n")[0].substr(2));
       }
       setTarget(`/${res.data.site.toLowerCase()}/${res.data.name}.py`);
     });
@@ -93,7 +110,7 @@ const Viewer = ({ id }) => {
               src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg"
               text="코드 자세히 보기"
               target={
-                "https://github.com/kshired/Algorithms/blob/main/" + target
+                "https://github.com/kshired/Algorithms/blob/main" + target
               }
             />
           </div>
