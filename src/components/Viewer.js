@@ -45,7 +45,7 @@ print(res)`;
       ) : (
         <div
           style={{
-            height: "80vh",
+            height: "85vh",
           }}
         >
           <PageHeader
@@ -58,7 +58,14 @@ print(res)`;
             ]}
             extra={[<Rate disabled allowHalf defaultValue={2.5} />]}
           ></PageHeader>
-          <SyntaxHighlighter language="python" style={vscDarkPlus}>
+          <SyntaxHighlighter
+            lineProps={{
+              style: { wordBreak: "break-all", whiteSpace: "pre-wrap" },
+            }}
+            wrapLines={true}
+            language="python"
+            style={vscDarkPlus}
+          >
             {codeString}
           </SyntaxHighlighter>
           <Paragraph>
