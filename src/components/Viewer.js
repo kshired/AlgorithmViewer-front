@@ -31,27 +31,29 @@ const Viewer = ({ id }) => {
     if (id === null) {
       return;
     }
-    axios.get(`http://localhost:8080/problems/${id}`).then((res) => {
-      setProblem(res.data);
-      if (res.data.site === 'PROGRAMMERS') {
-        setTitle(res.data.name.replaceAll('_', ' '));
-        setSubTitle('');
-        const tmpUrl = res.data.code.split('\n')[0].substr(2);
-        if (tmpUrl.includes('programmers')) {
-          setUrl(tmpUrl);
-        } else {
-          setUrl(null);
+    axios
+      .get(`${process.env.REACT_APP_SERVER_URL}/problems/${id}`)
+      .then((res) => {
+        setProblem(res.data);
+        if (res.data.site === 'PROGRAMMERS') {
+          setTitle(res.data.name.replaceAll('_', ' '));
+          setSubTitle('');
+          const tmpUrl = res.data.code.split('\n')[0].substr(2);
+          if (tmpUrl.includes('programmers')) {
+            setUrl(tmpUrl);
+          } else {
+            setUrl(null);
+          }
+        } else if (res.data.site === 'BAEKJOON') {
+          setTitle(res.data.code.split('\n')[1].substr(2));
+          setSubTitle(res.data.name);
+          setUrl(`https://boj.kr/${res.data.name}`);
+        } else if (res.data.site === 'LEETCODE') {
+          setTitle(res.data.code.split('\n')[1].substr(2));
+          setUrl(res.data.code.split('\n')[0].substr(2));
         }
-      } else if (res.data.site === 'BAEKJOON') {
-        setTitle(res.data.code.split('\n')[1].substr(2));
-        setSubTitle(res.data.name);
-        setUrl(`https://boj.kr/${res.data.name}`);
-      } else if (res.data.site === 'LEETCODE') {
-        setTitle(res.data.code.split('\n')[1].substr(2));
-        setUrl(res.data.code.split('\n')[0].substr(2));
-      }
-      setTarget(`/${res.data.site.toLowerCase()}/${res.data.name}.py`);
-    });
+        setTarget(`/${res.data.site.toLowerCase()}/${res.data.name}.py`);
+      });
   }, [id]);
 
   return (

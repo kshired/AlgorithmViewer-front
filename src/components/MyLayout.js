@@ -18,39 +18,45 @@ const MyLayout = () => {
   const [id, setId] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/problems?site=PROGRAMMERS').then((res) => {
-      setProgrammers(
-        res.data.map((p) => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_URL}/problems?site=PROGRAMMERS`)
+      .then((res) => {
+        setProgrammers(
+          res.data.map((p) => {
+            return {
+              id: p.id,
+              name: p.name.replaceAll('_', ' '),
+            };
+          })
+        );
+      });
+    axios
+      .get(`${process.env.REACT_APP_SERVER_URL}/problems?site=BAEKJOON`)
+      .then((res) => {
+        const data = res.data.map((p) => {
           return {
             id: p.id,
-            name: p.name.replaceAll('_', ' '),
+            name: p.name,
           };
-        })
-      );
-    });
-    axios.get('http://localhost:8080/problems?site=BAEKJOON').then((res) => {
-      const data = res.data.map((p) => {
-        return {
-          id: p.id,
-          name: p.name,
-        };
+        });
+
+        data.sort((a, b) => parseInt(a.name) - parseInt(b.name));
+        setBaekjoon(data);
       });
 
-      data.sort((a, b) => parseInt(a.name) - parseInt(b.name));
-      setBaekjoon(data);
-    });
+    axios
+      .get(`${process.env.REACT_APP_SERVER_URL}/problems?site=LEETCODE`)
+      .then((res) => {
+        const data = res.data.map((p) => {
+          return {
+            id: p.id,
+            name: p.name,
+          };
+        });
 
-    axios.get('http://localhost:8080/problems?site=LEETCODE').then((res) => {
-      const data = res.data.map((p) => {
-        return {
-          id: p.id,
-          name: p.name,
-        };
+        data.sort((a, b) => parseInt(a.name) - parseInt(b.name));
+        setLeetcode(data);
       });
-
-      data.sort((a, b) => parseInt(a.name) - parseInt(b.name));
-      setLeetcode(data);
-    });
   }, []);
   return (
     <Layout style={{ minHeight: '100vh' }}>
