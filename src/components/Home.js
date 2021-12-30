@@ -35,7 +35,7 @@ const Home = () => {
         cover={
           <img
             alt="boj tier"
-            src="http://mazassumnida.wtf/api/v2/generate_badge?boj=python4"
+            src="https://mazassumnida.wtf/api/v2/generate_badge?boj=python4"
           />
         }
       >
