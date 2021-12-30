@@ -1,6 +1,8 @@
 import { PageHeader, Rate, Tag, Empty, Typography } from "antd";
+import { useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import axios from "axios";
 
 const { Paragraph } = Typography;
 
@@ -11,31 +13,34 @@ const IconLink = ({ src, text, target }) => (
   </a>
 );
 
-const Viewer = () => {
-  const codeString = `# https://acmicpc.net/problem/1026
-# 보물
+const Viewer = ({ id }) => {
+  const [problem, setProblem] = useState(null);
+  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState("");
+  const [subTitle, setSubTitle] = useState("");
+  const [target, setTarget] = useState("");
 
-import sys
-input = lambda : sys.stdin.readline().rstrip()
-input_multiple_int = lambda : map(int,input().split())
-
-N = int(input())
-A = list(input_multiple_int())
-B = list(input_multiple_int())
-res = 0
-
-A.sort()
-B.sort(reverse=True)
-
-for i in range(N):
-    res += A[i]*B[i]
-
-print(res)`;
-  const url = codeString.split("\n")[0].split(" ")[1];
+  useEffect(() => {
+    if (id === null) {
+      return;
+    }
+    axios.get(`http://localhost:8080/problems/${id}`).then((res) => {
+      setProblem(res.data);
+      if (res.data.site === "PROGRAMMERS") {
+        setTitle(res.data.name.replaceAll("_", " "));
+        setSubTitle("");
+      } else if (res.data.site === "BAEKJOON") {
+        setTitle(res.data.code.split("\n")[1].substr(2));
+        setSubTitle(res.data.name);
+        setUrl(`https://boj.kr/${res.data.name}`);
+      }
+      setTarget(`/${res.data.site.toLowerCase()}/${res.data.name}.py`);
+    });
+  }, [id]);
 
   return (
     <>
-      {codeString.length === 0 ? (
+      {problem === null || id === null ? (
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           style={{
@@ -45,18 +50,18 @@ print(res)`;
       ) : (
         <div
           style={{
-            height: "85vh",
+            minHeight: "85vh",
           }}
         >
           <PageHeader
             className="problem-title"
-            title="보물"
-            subTitle=" 1026"
-            tags={[
-              <Tag color="magenta">수학</Tag>,
-              <Tag color="red">정렬</Tag>,
-            ]}
-            extra={[<Rate disabled allowHalf defaultValue={2.5} />]}
+            title={title}
+            subTitle={subTitle}
+            // tags={[
+            //   <Tag color="magenta">수학</Tag>,
+            //   <Tag color="red">정렬</Tag>,
+            // ]}
+            // extra={[<Rate disabled allowHalf defaultValue={2.5} />]}
           ></PageHeader>
           <SyntaxHighlighter
             lineProps={{
@@ -66,9 +71,9 @@ print(res)`;
             language="python"
             style={vscDarkPlus}
           >
-            {codeString}
+            {problem.code}
           </SyntaxHighlighter>
-          <Paragraph>
+          {/* <Paragraph>
             Ant Design interprets the color system into two levels: a
             system-level color system and a product-level color system.
           </Paragraph>
@@ -77,8 +82,8 @@ print(res)`;
             model, which makes it easier for designers to have a clear
             psychological expectation of color when adjusting colors,:well as
             facilitate communication in teams.
-          </Paragraph>
-          <div>
+          </Paragraph> */}
+          <div style={{ marginTop: "3vh" }}>
             <IconLink
               src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg"
               text="문제 풀러가기"
@@ -88,7 +93,7 @@ print(res)`;
               src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg"
               text="코드 자세히 보기"
               target={
-                "https://github.com/kshired/Algorithms/blob/main/baekjoon/1026.py"
+                "https://github.com/kshired/Algorithms/blob/main/" + target
               }
             />
           </div>

@@ -1,9 +1,10 @@
 import { Breadcrumb, Layout, Menu } from "antd";
 import { BaekjoonIcon, ProgrammersIcon } from "../icons/Icon";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Viewer from "./Viewer";
 import SubMenu from "antd/lib/menu/SubMenu";
 import Logo from "./Logo";
+import axios from "axios";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -11,7 +12,32 @@ const MyLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [site, setSite] = useState("");
   const [problem, setProblem] = useState("");
+  const [programmers, setProgrammers] = useState([]);
+  const [baekjoon, setBaekjoon] = useState([]);
+  const [id, setId] = useState(null);
 
+  useEffect(() => {
+    axios.get("http://localhost:8080/problems?site=PROGRAMMERS").then((res) => {
+      setProgrammers(
+        res.data.map((p) => {
+          return {
+            id: p.id,
+            name: p.name.replaceAll("_", " "),
+          };
+        })
+      );
+    });
+    axios.get("http://localhost:8080/problems?site=BAEKJOON").then((res) => {
+      setBaekjoon(
+        res.data.map((p) => {
+          return {
+            id: p.id,
+            name: p.name,
+          };
+        })
+      );
+    });
+  }, []);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
@@ -26,28 +52,30 @@ const MyLayout = () => {
             title="Baekjoon"
             icon={<BaekjoonIcon style={{ color: "white" }} />}
           >
-            {[...Array(40)].map((x, i) => (
+            {baekjoon.map((p) => (
               <Menu.Item
-                key={i + 2}
+                key={p.id}
                 onClick={() => {
                   setSite("Baekjoon");
-                  setProblem(i + 2);
+                  setProblem(p.name);
+                  setId(p.id);
                 }}
               >
-                {i + 2}
+                {p.name}
               </Menu.Item>
             ))}
           </SubMenu>
           <SubMenu key="42" title="Programmers" icon={<ProgrammersIcon />}>
-            {[...Array(40)].map((x, i) => (
+            {programmers.map((p) => (
               <Menu.Item
-                key={i + 43}
+                key={p.id}
                 onClick={() => {
                   setSite("Programmers");
-                  setProblem(i + 43);
+                  setProblem(p.name);
+                  setId(p.id);
                 }}
               >
-                {i + 43}
+                {p.name}
               </Menu.Item>
             ))}
           </SubMenu>
@@ -63,7 +91,7 @@ const MyLayout = () => {
             className="site-layout-background"
             style={{ padding: 24, minHeight: 360 }}
           >
-            <Viewer />
+            <Viewer id={id} />
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
